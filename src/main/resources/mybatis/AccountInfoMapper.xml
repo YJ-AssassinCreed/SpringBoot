@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yangjun.dao.mybatis.mapper.AccountInfoMapper" >
+
+  <sql id="Base_Column_List" >
+    id, account_name,mail,m_tel
+  </sql>
+  <resultMap id="BaseResultMap" type="com.yangjun.bean.AccountInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="account_name" property="account_name" jdbcType="VARCHAR" />
+    <result column="mail" property="mail" jdbcType="VARCHAR" />
+    <result column="m_tel" property="m_tel" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from account_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+</mapper>
