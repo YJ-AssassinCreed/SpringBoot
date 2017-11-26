@@ -1,6 +1,7 @@
 package com.yangjun.controller.portal;
 
 import com.yangjun.common.Const;
+import com.yangjun.common.ResponseCode;
 import com.yangjun.common.ServerResponse;
 import com.yangjun.pojo.User;
 import com.yangjun.service.IUserService;
@@ -86,4 +87,31 @@ public class UserController {
         }
         return iUserService.resetPassword(passwordOld,passwordNew,user);
     }
+    @RequestMapping(value = "update_information.do",method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse<User> update_information(HttpSession session,User user){
+        User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
+        if(currentUser == null){
+            return ServerResponse.createByErrorMessage("用户未登录");
+        }
+        user.setId(currentUser.getId());
+        user.setUsername(currentUser.getUsername());
+        ServerResponse<User> response = iUserService.updateInformation(user);
+        if(response.isSuccess()){
+            response.getData().setUsername(currentUser.getUsername());
+            session.setAttribute(Const.CURRENT_USER,response.getData());
+        }
+        return response;
+    }
+
+    @RequestMapping(value = "get_information.do",method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse<User> get_information(HttpSession session){
+        User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
+        if(currentUser == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"未登录,需要强制登录status=10");
+        }
+        return iUserService.getInformation(currentUser.getId());
+    }
+
 }
